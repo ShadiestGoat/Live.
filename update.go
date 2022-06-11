@@ -17,11 +17,6 @@ var slowTps = false
 var Debug string
 
 func DebugUpdate(g *Game) bool {
-	if ebiten.IsKeyPressed(ebiten.KeyR) {
-		g.Restart()
-		return true
-	}
-
 	addSpeed := ResolveVector(map[Direction]bool{
 		DirDown: keyHeld(ebiten.KeyO),
 		DirUp:   keyHeld(ebiten.KeyP),
@@ -36,6 +31,10 @@ func (g *Game) Update() error {
 		if DebugUpdate(g) {
 			return nil
 		}
+	}
+	if ebiten.IsKeyPressed(ebiten.KeyR) {
+		g.Restart()
+		return nil
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyEscape) {
 		pauseCooldown--
