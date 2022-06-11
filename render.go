@@ -69,31 +69,28 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	op.GeoM.Translate(float64(g.BGOffset[0])-float64(g.Resources.BGSize), float64(g.BGOffset[1])-float64(g.Resources.BGSize))
 	screen.DrawImage(g.Resources.BG, op)
 
-	protagOffset := CenterCoords
-	protagOffset.Sub(Vector{
-		g.Resources.Protag.Bounds().Dx()/2,
-		g.Resources.Protag.Bounds().Dy()/2,
-	})
-	
 	for _, enemy := range g.Enemies {
 		opMons := &ebiten.DrawImageOptions{}
-		opMons.GeoM.Translate(float64(enemy.Coords[0]-enemy.Sprite.Bounds().Dx()/2), float64(enemy.Coords[1]-enemy.Sprite.Bounds().Dy()/2))
+		width := float64(enemy.Sprite.Bounds().Dx())
+		height := float64(enemy.Sprite.Bounds().Dy())
+		opMons.GeoM.Translate(float64(enemy.Coords[0])-width/2, float64(enemy.Coords[1])-height/2)
 		
 		screen.DrawImage(enemy.Sprite, opMons)
-		ebitenutil.DrawRect(screen, float64(enemy.Coords[0])-1, float64(enemy.Coords[1])-1, 2, 2, color.White)
+		
+		DrawHP(screen, width, float64(enemy.Coords[0])-width/2, float64(enemy.Coords[1])-height/2-10, enemy.HP, enemy.MaxHP)
 	}
 
 	for _, info := range ShadowSl {
 		opShadow := &ebiten.DrawImageOptions{}
-		opShadow.GeoM.Translate(float64(protagOffset[0])+float64(curMovementVector[0])*info.Offset, 
-								float64(protagOffset[1])+float64(curMovementVector[1])*info.Offset,
+		opShadow.GeoM.Translate(float64(ProtagBox.Min.X)+float64(curMovementVector[0])*info.Offset, 
+								float64(ProtagBox.Min.Y)+float64(curMovementVector[1])*info.Offset,
 		)
 		opShadow.ColorM.ChangeHSV(0, info.Sat, info.Bright)
 		screen.DrawImage(g.Resources.Protag, opShadow)
 	}
 
 	opProt := &ebiten.DrawImageOptions{}
-	opProt.GeoM.Translate(float64(protagOffset[0]), float64(protagOffset[1]))
+	opProt.GeoM.Translate(float64(ProtagBox.Min.X), float64(ProtagBox.Min.Y))
 	screen.DrawImage(g.Resources.Protag, opProt)
 
 	for _, ability := range g.Protag.Abilities {
@@ -121,6 +118,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	screen.DrawImage(slashIcon, opIcon)
+
+	DrawHP(screen, float64(ProtagBox.Dx()), float64(ProtagBox.Min.X), float64(ProtagBox.Max.Y)+10, g.Protag.HP, g.Protag.MaxHP)
 
 	if g.IsPaused {
 		ebitenutil.DrawRect(screen, 0, 0, SCREEN_DIMENSIONS, SCREEN_DIMENSIONS, color.RGBA{

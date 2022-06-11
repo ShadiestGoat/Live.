@@ -56,7 +56,9 @@ type Enemy struct {
 type Protag struct {
 	MaxHP int
 	HP int
+
 	RegenFreq int
+	MaxRegenFreq int
 
 	IVTicks int
 	MaxIVTicks int
@@ -88,4 +90,11 @@ type  ActiveAbility interface {
 	Update()
 
 	Move(dx int, dy int)
+}
+
+func (p *Protag) Heal(hp int) {
+	p.HP += hp
+	if p.HP > p.MaxHP {
+		p.HP = p.MaxHP
+	}
 }

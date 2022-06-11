@@ -74,6 +74,13 @@ func (g *Game) Update() error {
 		g.Protag.IVTicks--
 	}
 
+	g.Protag.RegenFreq--
+
+	if g.Protag.RegenFreq == 0 {
+		g.Protag.Heal(1)
+		g.Protag.RegenFreq = g.Protag.MaxRegenFreq
+	}
+
 	g.ProtagMove(offset)
 
 	summonCooldown--

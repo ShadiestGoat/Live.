@@ -3,9 +3,13 @@ package main
 import (
 	"fmt"
 	"image"
+	"image/color"
 	"math"
 	"math/rand"
 	"time"
+
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 var CenterCoords = Vector{
@@ -30,11 +34,6 @@ func ResolveVector(dirs map[Direction]bool) Vector {
 
 func RandomInt(min int, max int) int {
 	rand.Seed(time.Now().UnixNano())
-	// if max-min <= 0 {
-	// 	tmp := min
-	// 	min = max
-	// 	max = tmp
-	// }
 	return rand.Intn(max-min+1) + min
 }
 
@@ -185,7 +184,9 @@ func (g *Game) Restart() {
 		Protag:    Protag{
 			MaxHP:    100,
 			HP:       100,
+
 			RegenFreq: 120,
+			MaxRegenFreq: 120,
 
 			IVTicks: 0,
 			MaxIVTicks: 35,
@@ -213,5 +214,26 @@ func (g *Game) Restart() {
 			// TODO: Add abilities!
 		},
 		Enemies:   []Enemy{},
+	}
+}
+
+func DrawHP(dst *ebiten.Image, width, x, y float64, hp, hpmax int) {
+	if hp != hpmax {
+		perc := float64(hp)/float64(hpmax)
+		greenW := math.Floor(perc*width)
+
+		ebitenutil.DrawRect(dst, x, y, greenW, 8, color.RGBA{
+			R: 39,
+			G: 206,
+			B: 0,
+			A: 122,
+		})
+
+		ebitenutil.DrawRect(dst, x+greenW, y, width-greenW, 8, color.RGBA{
+			R: 71,
+			G: 71,
+			B: 71,
+			A: 122,
+		})
 	}
 }
