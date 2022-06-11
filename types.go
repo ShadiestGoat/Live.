@@ -46,6 +46,7 @@ type Enemy struct {
 	Speed int
 	HP int
 	MaxHP int
+	Attack int
 	Reward Reward
 	Shape EnemyShape
 	Coords Vector
@@ -55,6 +56,11 @@ type Enemy struct {
 type Protag struct {
 	MaxHP int
 	HP int
+	RegenFreq int
+
+	IVTicks int
+	MaxIVTicks int
+
 	XP int
 	Level int
 	Speed int

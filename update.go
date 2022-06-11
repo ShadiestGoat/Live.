@@ -69,6 +69,10 @@ func (g *Game) Update() error {
 			g.Protag.Abilities[AU_SLASH].Start(g)
 		}
 	}
+	
+	if g.Protag.IVTicks != 0 {
+		g.Protag.IVTicks--
+	}
 
 	g.ProtagMove(offset)
 
@@ -114,11 +118,14 @@ func (g *Game) Update() error {
 			continue
 		}
 		if RectCollision(bounds, ProtagBox) {
-			if g.Time > bestTime {
-				bestTime = g.Time
+			if g.Protag.IVTicks == 0 {
+				g.Protag.HP -= m.Attack
+				if g.Protag.HP <= 0 {
+					g.Restart()
+					return nil
+				}
+				g.Protag.IVTicks = g.Protag.MaxIVTicks
 			}
-			g.Restart()
-			return nil
 		}
 
 		velocity := m.Move()

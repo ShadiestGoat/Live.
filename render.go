@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"image/color"
 	"io"
 	"math"
@@ -129,6 +130,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			191,
 		})
 	}
+	ebitenutil.DebugPrint(screen, fmt.Sprint(g.Protag.HP))
 }
 
 var slashIcon *ebiten.Image

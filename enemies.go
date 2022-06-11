@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"image"
 	"math"
 )
@@ -29,6 +28,7 @@ func (e EnemySummonResourcePack) Summon(ticks int) Enemy {
 			ItemChance: e.RewardItemChance.ResolveFloat(ticks),
 			ItemRarity: e.RewardItemRarity,
 		},
+		Attack: e.Damage.Resolve(ticks),
 
 		Shape:      e.ShapeInfo,
 		Sprite: 	e.Sprite,
@@ -51,7 +51,6 @@ func (g *Game) SummonOne() {
 
 func (g *Game) Summon() {
 	amt := RandomInt(1, g.Resources.SpawnAmount.Resolve(g.Time))
-	fmt.Println("Summon: ", amt)
 	for i := 0; i<amt; i++ {
 		g.SummonOne()
 	}

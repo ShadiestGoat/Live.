@@ -173,6 +173,9 @@ func TimeSTR(ticks int) string {
 }
 
 func (g *Game) Restart() {
+	if g.Time > bestTime {
+		bestTime = g.Time
+	}
 	r := LoadResourcePack("hell")
 	*g = Game{
 		Resources: &r,
@@ -180,8 +183,13 @@ func (g *Game) Restart() {
 		IsPaused:  false,
 		Time:      0,
 		Protag:    Protag{
-			MaxHP:    0,
-			HP:       0,
+			MaxHP:    100,
+			HP:       100,
+			RegenFreq: 120,
+
+			IVTicks: 0,
+			MaxIVTicks: 35,
+
 			XP:       0,
 			Level:    0,
 			Speed:    8,
@@ -191,7 +199,7 @@ func (g *Game) Restart() {
 			Abilities: map[ActionUpgradeID]ActiveAbility{
 				AU_SLASH: &IncreasingScaleAbility{
 					_Cooldown:        0,
-					_MaxCooldown:     2700,
+					_MaxCooldown:     2400,
 					XP:               0,
 					Level:            0,
 
