@@ -31,6 +31,9 @@ I also want it to be extremly easy to mod. In order to achieve that, right now I
 - [ ] Active abilities that you have to unlock
 - [ ] Save data
 - [ ] Better textures (trash atm)
+- [ ] Balance
+- [ ] Add more levels
+- [ ] Allow for other aspect ratios
 
 \* - Mac isn't fully supported yet
 
