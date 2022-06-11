@@ -24,6 +24,9 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: 1.18
+
+      - name: Set up xorg-dev
+        run: sudo apt-get install -y xorg-dev
       # Runs a single command using the runners shell
       - name: Build for release
         run: sh scripts/releaseBuild.sh
