@@ -39,14 +39,15 @@
         "scale": true,
         "operation": "/",
         "factor": 1.2,
-        "interval": 60
+        "interval": 2400,
+        "min": 100
     },
     "spawnAmount": {
         "base": 2,
         "scale": true,
         "operation": "*",
         "factor": 1.15,
-        "interval": 60,
+        "interval": 1500,
         "max": 15
     }
 }
