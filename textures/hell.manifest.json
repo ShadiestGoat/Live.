@@ -1,0 +1,52 @@
+{
+    "backgroundSize": 256,
+    "backgroundLocations": [
+        [0,0]
+    ],
+    "enemies": [
+        {
+            "id": "john",
+            "location": [256,0],
+            "deathAnimation": [],
+            "shape": {
+                "width": 64,
+                "height": 128,
+                "circle": false
+            },
+            "hp": {
+                "base": 25
+            },
+            "speed": {
+                "base": 3
+            },
+            "dmg": {
+                "base": 0
+            },
+            "rewardXP": {
+                "base": 0
+            },
+            "rewardGold": {
+                "base": 0
+            },
+            "rewardItemChance": {
+                "base": 0.5
+            },
+            "rewardItemRarity": "COMMON"
+        }
+    ],
+    "spawnRate": {
+        "base": 420,
+        "scale": true,
+        "operation": "/",
+        "factor": 1.2,
+        "interval": 60
+    },
+    "spawnAmount": {
+        "base": 2,
+        "scale": true,
+        "operation": "*",
+        "factor": 1.15,
+        "interval": 60,
+        "max": 15
+    }
+}
