@@ -14,7 +14,29 @@ var pauseCooldown = 10
 
 var slowTps = false
 
+var Debug string
+
+func DebugUpdate(g *Game) bool {
+	if ebiten.IsKeyPressed(ebiten.KeyR) {
+		g.Restart()
+		return true
+	}
+
+	addSpeed := ResolveVector(map[Direction]bool{
+		DirDown: keyHeld(ebiten.KeyO),
+		DirUp:   keyHeld(ebiten.KeyP),
+	})
+
+	g.Protag.Speed += addSpeed[1]
+	return false
+}
+
 func (g *Game) Update() error {
+	if Debug == "t" {
+		if DebugUpdate(g) {
+			return nil
+		}
+	}
 	if ebiten.IsKeyPressed(ebiten.KeyEscape) {
 		pauseCooldown--
 		if pauseCooldown <= 0 {
@@ -22,21 +44,16 @@ func (g *Game) Update() error {
 			pauseCooldown = 10
 		}
 	}
-	// FIXME: Debug only!
-	if ebiten.IsKeyPressed(ebiten.KeyR) {
-		g.Restart()
-		return nil
-	}
 	if g.IsPaused {
 		return nil
 	}
 	g.Time++
 	dirs := map[Direction]bool{}
-	dirs[DirUp] = ebiten.IsKeyPressed(ebiten.KeyArrowUp)
-	dirs[DirRight] = ebiten.IsKeyPressed(ebiten.KeyArrowRight)
-	dirs[DirDown] = ebiten.IsKeyPressed(ebiten.KeyArrowDown)
-	dirs[DirLeft] = ebiten.IsKeyPressed(ebiten.KeyArrowLeft)
-	
+	dirs[DirUp] = oneKeyPressed([]ebiten.Key{ebiten.KeyArrowUp, ebiten.KeyW})
+	dirs[DirRight] = oneKeyPressed([]ebiten.Key{ebiten.KeyArrowRight, ebiten.KeyD})
+	dirs[DirDown] = oneKeyPressed([]ebiten.Key{ebiten.KeyArrowDown, ebiten.KeyS})
+	dirs[DirLeft] = oneKeyPressed([]ebiten.Key{ebiten.KeyArrowLeft, ebiten.KeyA})
+
 	offset := ResolveVector(dirs)
 	curMovementVector = offset
 	
@@ -48,21 +65,13 @@ func (g *Game) Update() error {
 		lastMovementVector[1] = offset[1]
 	}
 	
-	if ebiten.IsKeyPressed(ebiten.KeyZ) {
+	if oneKeyPressed([]ebiten.Key{ebiten.KeyZ, ebiten.KeyE}) {
 		if g.Protag.Abilities[AU_SLASH].Cooldown() <= 0 {
 			g.Protag.Abilities[AU_SLASH].Start(g)
 		}
 	}
 
 	g.ProtagMove(offset)
-
-	// FIXME: Debug only!
-	addSpeed := ResolveVector(map[Direction]bool{
-		DirUp:   keyHeld(ebiten.KeyA),
-		DirDown: keyHeld(ebiten.KeyS),
-	})
-
-	g.Protag.Speed += addSpeed[1]
 
 	summonCooldown--
 	

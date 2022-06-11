@@ -67,3 +67,13 @@ func keyHeld(key ebiten.Key) bool {
 	d := inpututil.KeyPressDuration(key)
 	return d%5 == 0
 }
+
+// returns true if at least 1 key of keys is pressed
+func oneKeyPressed(keys []ebiten.Key) bool {
+	for _, key := range keys {
+		if ebiten.IsKeyPressed(key) {
+			return true
+		}
+	}
+	return false
+}

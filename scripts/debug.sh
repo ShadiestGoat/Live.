@@ -1,1 +1,1 @@
-clear && go build -o "bin/debug" && ./bin/debug
+clear && go build -o "bin/debug" -ldflags "-X main.Debug=t" && ./bin/debug
