@@ -124,7 +124,7 @@ func (g *Game) Update() error {
 		if killed {
 			continue
 		}
-		if g.Protag.IVTicks != 0 {
+		if g.Protag.IVTicks == 0 {
 			if RectCollision(bounds, ProtagBox) {
 				g.Protag.HP -= m.Attack
 				if g.Protag.HP <= 0 {
