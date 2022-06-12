@@ -105,14 +105,12 @@ type Manifest struct {
 	Goal GoalSummonInfo `json:"goal"`
 }
 
-//go:embed textures
+//go:embed resources
 var textureFiles embed.FS
 
 func loadFile(name string) fs.File {
-	t, err := textureFiles.Open(
-		// filepath.Join("textures", name)
-		"textures/" + name,
-	)
+	// even windows has '/'
+	t, err := textureFiles.Open("resources/" + name)
 	PanicIfErr(err)
 	return t
 }

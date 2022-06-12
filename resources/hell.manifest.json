@@ -18,7 +18,7 @@
                 "scale": true,
                 "operation": "*",
                 "factor": 2,
-                "interval": 9000,
+                "interval": 8800,
                 "max": 200
             },
             "speed": {
@@ -29,7 +29,7 @@
                 "scale": true,
                 "operation": "*",
                 "factor": 1.3,
-                "interval": 8600,
+                "interval": 8500,
                 "max": 99
             },
             "rewardXP": {
@@ -47,18 +47,18 @@
     "spawnRate": {
         "base": 380,
         "scale": true,
-        "operation": "/",
-        "factor": 1.4,
-        "interval": 1800,
-        "min": 90
+        "operation": "-",
+        "factor": 10,
+        "interval": 600,
+        "min": 70
     },
     "spawnAmount": {
-        "base": 3,
+        "base": 4,
         "scale": true,
-        "operation": "*",
-        "factor": 1.4,
-        "interval": 1100,
-        "max": 18
+        "operation": "+",
+        "factor": 1,
+        "interval": 240,
+        "max": 42
     },
     "goal": {
         "HP": 30000,
