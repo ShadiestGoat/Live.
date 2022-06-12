@@ -83,7 +83,7 @@ func (g *Game) Update() error {
 		summonCooldown = g.Resources.SpawnRate.Resolve(g.Time)
 		
 		// put a limit on the amount that can be summoned
-		if len(g.Enemies) < 10 {
+		if len(g.Enemies) < 600 {
 			g.Summon()
 		}
 	}
