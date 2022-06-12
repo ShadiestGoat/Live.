@@ -40,19 +40,23 @@
         }
     ],
     "spawnRate": {
-        "base": 390,
+        "base": 380,
         "scale": true,
         "operation": "/",
         "factor": 1.4,
-        "interval": 2000,
-        "min": 100
+        "interval": 1800,
+        "min": 90
     },
     "spawnAmount": {
         "base": 3,
         "scale": true,
         "operation": "*",
-        "factor": 1.35,
+        "factor": 1.4,
         "interval": 1100,
         "max": 18
+    },
+    "goal": {
+        "HP": 30000,
+        "speed": 5
     }
 }

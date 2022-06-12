@@ -47,13 +47,9 @@ func (g *Game) Update() error {
 		return nil
 	}
 	g.Time++
-	dirs := map[Direction]bool{}
-	dirs[DirUp] = oneKeyPressed([]ebiten.Key{ebiten.KeyArrowUp, ebiten.KeyW})
-	dirs[DirRight] = oneKeyPressed([]ebiten.Key{ebiten.KeyArrowRight, ebiten.KeyD})
-	dirs[DirDown] = oneKeyPressed([]ebiten.Key{ebiten.KeyArrowDown, ebiten.KeyS})
-	dirs[DirLeft] = oneKeyPressed([]ebiten.Key{ebiten.KeyArrowLeft, ebiten.KeyA})
 
-	offset := ResolveVector(dirs)
+	offset := g.Protag.Velocity(*g)
+
 	curMovementVector = offset
 	
 	if offset[0] != 0 {
@@ -70,14 +66,11 @@ func (g *Game) Update() error {
 		}
 	}
 	
-	if g.Protag.IVTicks != 0 {
-		g.Protag.IVTicks--
-	}
+	g.Protag.DecreaseIVFRames(*g)
 
 	g.Protag.RegenFreq--
-
 	if g.Protag.RegenFreq == 0 {
-		g.Protag.Heal(1)
+		g.ChangeHP(1, &g.Protag)
 		g.Protag.RegenFreq = g.Protag.MaxRegenFreq
 	}
 
@@ -107,12 +100,7 @@ func (g *Game) Update() error {
 	}
 
 	for _, m := range g.Enemies {
-		// despawn far away monsters
-		if m.Coords.DistanceToCenter() > RADIUS_DESPAWN {
-			continue
-		}
-
-		bounds := m.Rect()
+		bounds := m.Box(*g)
 
 		killed := false
 		for _, weapon := range weaponBoxes {
@@ -124,20 +112,19 @@ func (g *Game) Update() error {
 		if killed {
 			continue
 		}
-		if g.Protag.IVTicks == 0 {
+		if g.Protag.IVFrames() == 0 {
 			if RectCollision(bounds, ProtagBox) {
-				g.Protag.HP -= m.Attack
-				if g.Protag.HP <= 0 {
+				if !g.Hurt(m.Attack, &g.Protag) {
 					g.Restart()
 					return nil
 				}
-				g.Protag.IVTicks = g.Protag.MaxIVTicks
 			}
 		}
 
-		velocity := m.Move()
-		m.Coords.Add(velocity)
-		
+		velocity := m.Velocity(*g)
+		if !m.Move(velocity, g) {
+			continue
+		}
 
 		newMonsters = append(newMonsters, m)
 	}

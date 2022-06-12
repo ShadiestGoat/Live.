@@ -70,13 +70,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	for _, enemy := range g.Enemies {
 		opMons := &ebiten.DrawImageOptions{}
-		width := float64(enemy.Sprite.Bounds().Dx())
-		height := float64(enemy.Sprite.Bounds().Dy())
-		opMons.GeoM.Translate(float64(enemy.Coords[0])-width/2, float64(enemy.Coords[1])-height/2)
+		b := enemy.Box(*g)
+		width := float64(enemy.Sprite(*g).Bounds().Dx())
+		opMons.GeoM.Translate(float64(b.Min.X), float64(b.Min.Y))
 		
-		screen.DrawImage(enemy.Sprite, opMons)
+		screen.DrawImage(enemy.Sprite(*g), opMons)
 		
-		DrawHP(screen, width, float64(enemy.Coords[0])-width/2, float64(enemy.Coords[1])-height/2-10, enemy.HP, enemy.MaxHP)
+		DrawHP(screen, width, float64(b.Min.X), float64(b.Min.Y)-10, enemy.HP(), enemy.HPMax(*g))
 	}
 
 	for _, info := range ShadowSl {
@@ -118,7 +118,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	screen.DrawImage(slashIcon, opIcon)
 
-	DrawHP(screen, float64(ProtagBox.Dx()), float64(ProtagBox.Min.X), float64(ProtagBox.Max.Y)+10, g.Protag.HP, g.Protag.MaxHP)
+	DrawHP(screen, float64(ProtagBox.Dx()), float64(ProtagBox.Min.X), float64(ProtagBox.Max.Y)+10, g.Protag.HP(), g.Protag.HPMax(*g))
 
 	if g.IsPaused {
 		ebitenutil.DrawRect(screen, 0, 0, SCREEN_DIMENSIONS, SCREEN_DIMENSIONS, color.RGBA{

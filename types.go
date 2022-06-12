@@ -1,5 +1,7 @@
 package main
 
+// TODO: restructure alive things to use interface, so that theres a universal way to check for inv frames & a universal way to damage
+
 import (
 	"image"
 
@@ -20,6 +22,8 @@ type Game struct {
 
 	Protag Protag
 	Enemies []Enemy
+
+	Goal Goal
 }
 
 type ItemRarity string
@@ -42,39 +46,8 @@ type Reward struct {
 	ItemRarity ItemRarity `json:"itemRarity"`
 }
 
-type Enemy struct {
-	Speed int
-	HP int
-	MaxHP int
-	Attack int
-	Reward Reward
-	Shape EnemyShape
-	Coords Vector
-	Sprite *ebiten.Image
-}
 
-type Protag struct {
-	MaxHP int
-	HP int
-
-	RegenFreq int
-	MaxRegenFreq int
-
-	IVTicks int
-	MaxIVTicks int
-
-	XP int
-	Level int
-	Speed int
-	Luck int
-	// This is what should be used for collision, not width/height! It's a circle radius.
-	Reach int
-
-	Coins int
-	Abilities map[ActionUpgradeID]ActiveAbility
-}
-
-type  ActiveAbility interface {
+type ActiveAbility interface {
 	Cooldown() int
 	MaxCooldown() int
 	// If it has stat changes, it should be done. 
@@ -92,9 +65,24 @@ type  ActiveAbility interface {
 	Move(dx int, dy int)
 }
 
-func (p *Protag) Heal(hp int) {
-	p.HP += hp
-	if p.HP > p.MaxHP {
-		p.HP = p.MaxHP
-	}
+type Alive interface {
+	Coords() Vector
+
+	// returns true if it should still be alive (ie. not despawned)
+	Move(v Vector, g *Game) bool
+
+	Velocity(g Game) Vector
+
+	HP() int
+	HPMax(g Game) int
+
+	Sprite(g Game) *ebiten.Image
+	Box(g Game) image.Rectangle
+
+	// unsafe method to set this creature's hp. For a safe method see tools.go ChangeHP()
+	setHP(newHP int)
+
+	IVFrames() int
+	DecreaseIVFRames(g Game)
+	ResetIVFrames()
 }

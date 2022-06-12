@@ -1,8 +1,6 @@
 package main
 
 import (
-	"math"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
@@ -31,17 +29,8 @@ var DirStr = map[Direction]string{
 	DirLeft:  "left",
 }
 
-func (g *Game) ProtagMove(dirs Vector) {
-	sM := float64(g.Protag.Speed)
-
-	if dirs[0] != 0 && dirs[1] != 0 {
-		sM *= 1/math.Sqrt2
-	}
-
-	dirs[0] *= int(math.Round(sM))
-	dirs[1] *= int(math.Round(sM))
-
-	g.BGOffset.Add(dirs)
+func (g *Game) ProtagMove(velocity Vector) {
+	g.BGOffset.Add(velocity)
 	
 	g.BGOffset[0] = Overflow(g.BGOffset[0], g.Resources.BGSize)
 	g.BGOffset[1] = Overflow(g.BGOffset[1], g.Resources.BGSize)
@@ -49,12 +38,12 @@ func (g *Game) ProtagMove(dirs Vector) {
 	newMonsters := []Enemy{}
 
 	for _, m := range g.Enemies {
-		m.Coords.Add(dirs)
+		m.Move(velocity, g)
 		newMonsters = append(newMonsters, m)
 	}
 
 	for id := range g.Protag.Abilities {
-		g.Protag.Abilities[id].Move(dirs[0], dirs[1])
+		g.Protag.Abilities[id].Move(velocity[0], velocity[1])
 	}
 
 	g.Enemies = newMonsters

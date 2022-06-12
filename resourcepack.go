@@ -85,6 +85,13 @@ type ResourcePack struct {
 
 	SpawnRate ManifestScaling
 	SpawnAmount ManifestScaling
+
+	GoalInfo GoalSummonInfo
+}
+
+type GoalSummonInfo struct {
+	HP int `json:"HP"`
+	Speed int `json:"speed"`
 }
 
 type Manifest struct {
@@ -94,6 +101,8 @@ type Manifest struct {
 
 	BGLocs []Vector `json:"backgroundLocations"`
 	BGSize int `json:"backgroundSize"`
+
+	Goal GoalSummonInfo `json:"goal"`
 }
 
 //go:embed textures
@@ -147,6 +156,7 @@ func LoadResourcePack(world string) ResourcePack {
 	}
 
 	protag := loadTexture(loadFile("protag.png"))
+	goal := loadTexture(loadFile("goal.png"))
 
 	enemies := []EnemySummonResourcePack{}
 
@@ -191,10 +201,12 @@ func LoadResourcePack(world string) ResourcePack {
 		BGSize: manifest.BGSize,
 
 		Protag:    protag,
-		// Goal:      goal,
+		Goal:      goal,
 		Enemies:   enemies,
 
 		SpawnRate: manifest.SpawnRate,
-		SpawnAmount: manifest.SpawnAmount,	
+		SpawnAmount: manifest.SpawnAmount,
+		
+		GoalInfo: manifest.Goal,
 	}
 }

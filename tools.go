@@ -176,20 +176,22 @@ func (g *Game) Restart() {
 		bestTime = g.Time
 	}
 	r := LoadResourcePack("hell")
+	goalCoords := AngleToCoords(RandomFloat(0, 2*math.Pi), 400)
+
 	*g = Game{
 		Resources: &r,
 		BGOffset:  Vector{},
 		IsPaused:  false,
 		Time:      0,
 		Protag:    Protag{
-			MaxHP:    100,
-			HP:       100,
+			_MaxHP:    100,
+			_HP:       100,
 
 			RegenFreq: 120,
 			MaxRegenFreq: 120,
 
-			IVTicks: 0,
-			MaxIVTicks: 35,
+			_IVFrames: 0,
+			MaxIVFrames: 35,
 
 			XP:       0,
 			Level:    0,
@@ -214,6 +216,12 @@ func (g *Game) Restart() {
 			// TODO: Add abilities!
 		},
 		Enemies:   []Enemy{},
+		Goal: Goal{
+			_Coords:      goalCoords,
+			_HP:          r.GoalInfo.HP,
+			_IVFrames:    0,
+			IVFramesMax: 40,
+		},
 	}
 }
 
@@ -236,4 +244,75 @@ func DrawHP(dst *ebiten.Image, width, x, y float64, hp, hpmax int) {
 			A: 122,
 		})
 	}
+}
+
+// A safe way to change a creature's hp. Returns true if its still alive.
+func (g *Game) ChangeHP(hpChange int, a Alive) bool {
+	newHP := a.HP() + hpChange
+	if newHP <= 0 {
+		return false
+	}
+	if newHP > a.HPMax(*g) {
+		newHP = a.HPMax(*g)
+	}
+	a.setHP(newHP)
+	return true
+}
+
+// Returns true if 'a' is still *alive* 
+func (g *Game) Hurt(attack int, a Alive) bool {
+	ret := g.ChangeHP(-attack, a)
+	if ret {
+		a.ResetIVFrames()
+	}
+	return ret
+}
+
+func GetVelocityToCenter(a Alive, speed int) Vector {
+	curCoords := a.Coords()
+	diff := Vector{
+		CenterCoords[0]-curCoords[0],
+		CenterCoords[1]-curCoords[1],
+	}
+
+	ang := math.Atan(float64(diff[0])/float64(diff[1]))
+
+	dx := math.Cos(ang)
+	dy := math.Sin(ang)
+	s := true
+
+	if diff[1] == 0 {
+		s = false
+		dx = 0
+		dy = 1
+		if diff[0] < 0 {
+			dy = -1
+		}
+	}
+	if diff[0] == 0 {
+		s = false
+		dy = 0
+		dx = 1
+		if diff[1] < 0 {
+			dx = -1
+		}
+	}
+
+	
+	if diff[1] < 0 && s {
+		dx *= -1
+		dy *= -1
+	}
+
+	dy *= float64(speed)
+	dx *= float64(speed)
+	
+	return Vector{
+		int(math.Round(dy)),
+		int(math.Round(dx)),
+	}
+}
+
+func BasicBox(coords Vector, sprite *ebiten.Image) image.Rectangle {
+	return image.Rect(coords[0]-sprite.Bounds().Dx()/2, coords[1]-sprite.Bounds().Dy()/2, coords[0]+sprite.Bounds().Dx()/2, coords[1]+sprite.Bounds().Dy()/2)
 }
