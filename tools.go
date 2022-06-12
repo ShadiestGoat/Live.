@@ -203,9 +203,12 @@ func (g *Game) Restart() {
 				AU_SLASH: &IncreasingScaleAbility{
 					_Cooldown:        0,
 					_MaxCooldown:     2400,
+
 					XP:               0,
 					Level:            0,
 
+					Attack: 40,
+					
 					CurExecutionTick: 0,
 					DspExecutionTick: 20,
 					MaxExecutionTick: 45,
@@ -261,6 +264,9 @@ func (g *Game) ChangeHP(hpChange int, a Alive) bool {
 
 // Returns true if 'a' is still *alive* 
 func (g *Game) Hurt(attack int, a Alive) bool {
+	if a.IVFrames() != 0 {
+		return true
+	}
 	ret := g.ChangeHP(-attack, a)
 	if ret {
 		a.ResetIVFrames()

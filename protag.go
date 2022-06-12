@@ -32,15 +32,19 @@ func (p Protag) Coords() Vector {
 	return CenterCoords
 }
 
-func (p Protag) Velocity(g Game) Vector {
+func (p Protag) GetOffset() Vector {
 	dirs := map[Direction]bool{}
 	dirs[DirUp] = oneKeyPressed([]ebiten.Key{ebiten.KeyArrowUp, ebiten.KeyW})
 	dirs[DirRight] = oneKeyPressed([]ebiten.Key{ebiten.KeyArrowRight, ebiten.KeyD})
 	dirs[DirDown] = oneKeyPressed([]ebiten.Key{ebiten.KeyArrowDown, ebiten.KeyS})
 	dirs[DirLeft] = oneKeyPressed([]ebiten.Key{ebiten.KeyArrowLeft, ebiten.KeyA})
 
-	resolved := ResolveVector(dirs)
+	return ResolveVector(dirs)
+}
 
+func (p Protag) Velocity(g Game) Vector {
+	resolved := p.GetOffset()
+	
 	sM := float64(p.Speed)
 
 	if resolved[0] != 0 && resolved[1] != 0 {

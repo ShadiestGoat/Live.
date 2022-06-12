@@ -18,6 +18,8 @@ type IncreasingScaleAbility struct {
 	_Cooldown int
 	_MaxCooldown int
 
+	Attack int
+
 	XP int
 	Level int
 
@@ -144,4 +146,8 @@ var slashTexture *ebiten.Image
 
 func init() {
 	slashTexture = loadTexture(loadFile("slash.png"))
+}
+
+func (a IncreasingScaleAbility) Damage() int {
+	return a.Attack
 }

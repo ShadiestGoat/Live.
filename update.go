@@ -48,7 +48,8 @@ func (g *Game) Update() error {
 	}
 	g.Time++
 
-	offset := g.Protag.Velocity(*g)
+	protagVelocity := g.Protag.Velocity(*g)
+	offset := g.Protag.GetOffset()
 
 	curMovementVector = offset
 	
@@ -74,7 +75,7 @@ func (g *Game) Update() error {
 		g.Protag.RegenFreq = g.Protag.MaxRegenFreq
 	}
 
-	g.ProtagMove(offset)
+	g.ProtagMove(protagVelocity)
 
 	summonCooldown--
 	
@@ -82,7 +83,7 @@ func (g *Game) Update() error {
 		summonCooldown = g.Resources.SpawnRate.Resolve(g.Time)
 		
 		// put a limit on the amount that can be summoned
-		if len(g.Enemies) < 550 {
+		if len(g.Enemies) < 10 {
 			g.Summon()
 		}
 	}
@@ -90,25 +91,37 @@ func (g *Game) Update() error {
 	newMonsters := []Enemy{}
 
 	weaponBoxes := []image.Rectangle{}
+	dmgWeapons := []int{}
 	
 	for i := range g.Protag.Abilities {
 		g.Protag.Abilities[i].Update()
 		if g.Protag.Abilities[i].ActiveTimeLeft() == 0 {
 			continue
 		}
+		if !g.Protag.Abilities[i].IsWeapon() {
+			continue
+		}
 		weaponBoxes = append(weaponBoxes, g.Protag.Abilities[i].Box())
+		dmgWeapons = append(dmgWeapons, g.Protag.Abilities[i].Damage())
 	}
 
 	for _, m := range g.Enemies {
+		m.DecreaseIVFRames(*g)
 		bounds := m.Box(*g)
 
 		killed := false
-		for _, weapon := range weaponBoxes {
-			if RectCollision(weapon, bounds) {
-				killed = true
-				break
+
+		if m.IVFrames() == 0 {
+			for i, weapon := range weaponBoxes {
+				if RectCollision(weapon, bounds) {
+					if !g.Hurt(dmgWeapons[i], &m) {
+						killed = true
+					}
+					break
+				}
 			}
 		}
+
 		if killed {
 			continue
 		}

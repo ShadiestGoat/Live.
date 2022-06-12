@@ -58,6 +58,9 @@ type ActiveAbility interface {
 	
 	// If it's a weapon, then like it has a collision box. Otherwise, no.
 	IsWeapon() bool
+	// Returns attack if it's a weapon, otherwise, 0
+	Damage() int
+
 	Box() image.Rectangle
 	Draw(screen *ebiten.Image, g Game)
 	Update()

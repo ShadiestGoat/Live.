@@ -44,6 +44,8 @@ func (e EnemySummonResourcePack) Summon(ticks int) Enemy {
 
 		Shape:      e.ShapeInfo,
 		_Sprite: 	e.Sprite,
+
+		MaxIVFrames: 45,
 	}
 }
 
