@@ -14,7 +14,7 @@
                 "circle": false
             },
             "hp": {
-                "base": 65,
+                "base": 25,
                 "scale": true,
                 "operation": "*",
                 "factor": 2,
