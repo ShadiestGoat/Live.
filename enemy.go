@@ -64,7 +64,8 @@ func (g *Game) SummonOne() {
 }
 
 func (g *Game) Summon() {
-	amt := RandomInt(1, g.Resources.SpawnAmount.Resolve(g.Time))
+	maxSpawnAmt := g.Resources.SpawnAmount.Resolve(g.Time)
+	amt := RandomInt(int(math.Ceil(0.25*float64(maxSpawnAmt))), maxSpawnAmt)
 	for i := 0; i<amt; i++ {
 		g.SummonOne()
 	}
